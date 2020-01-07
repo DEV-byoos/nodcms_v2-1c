@@ -1,0 +1,120 @@
+Autheur   Gabriel BOBARD  gbobard@gmail.com    http://byoos.com  for the community nodcms    version du 2019/01/6
+The main objective of this work:
+migration NodCMS_v2-0 to ByoosCms_v2-1c on php 7.4 to codeIgniter 3.1.11 password strategy BCRYPT - tanslate French Language
+
+ORGANISATION
+BYOOS solutions Cameroun  http://byoos.com
+download on github   https://github.com/khodakhah/nodcms.git
+explore   https://github.com/khodakhah/nodcms
+
+Installation of NodCMS Current version is 2.0 and is developed by NodCMS Group.
+
+CONFIGURATION
+PHP version: 7.4
+database server version : 10.3.21-MariaDB-1:10.3.21+maria~stretch-log - mariadb.org binary distribution 
+
+********** START debug *************
+IN /root/
+
+move system  IN  /root/vendor/framework/codeigniter/system   to  codeigniter version 3.1.11
+rename  nodcms directory to application
+update /root/index.php
+FIX
+	$system_path = 'vendor/framework/codeigniter/system';
+	$application_folder = 'application';
+
+IN  /root/application/config/nodcms.php...
+renanme  IN  /root/application/config/byooscms.php...
+FIX
+update to  /root/application/config/autoload.php
+$autoload['config'] = array('byooscms');
+
+BUGG
+the logout function cannot be found error 404
+IN /root/application/views/nodcms-top-menu.php
+<a class="dropdown-item" href="<?php echo base_url().$this->language['code']; ?>/logout"><i class="icon-power"></i><?=_l('Log Out',$this);?></a>
+
+AND   /root/application/views/admin/top-menu.php      
+<a class="dropdown-item" href="<?php echo base_url().$this->language['code']; ?>/logout"><i class="icon-power"></i><?=_l('Log Out',$this);?></a>
+
+IN /root/application/config/routes.php
+FIX $route['([a-z]{2})/logout'] = 'Registration/logout';
+copy IN   /root/application/controllers/General.php
+
+
+    /**
+     * Log out user (remove all user sessions)
+     *
+     * @param string $lang
+     */
+    function logout($lang = "")
+    {
+        $this->removeUserSessions();
+        redirect(base_url().$lang);
+    }
+IN   /root/application/controllers/Registration.php
+
+
+strategy Password
+IN /root/application/models/Users_model.php...
+line 20 FIX 'password'=>"varchar(255) DEFAULT NULL",
+
+IN     /root/application/models/Users_model/   public function add($data)  and     public function edit($id, $data)
+FIX         $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
+
+    
+    // Get Password match BYOOS modify
+    function PasswordMatch($username, $password){
+
+		$this->db->select('password');
+		$this->db->from('users');
+		$this->db->where('username', $username);
+		$hash = $this->db->get()->row('password');
+		if ( password_verify($password, $hash) ){
+			return $hash;
+		}
+		return NULL;
+    }
+    
+
+    // Get login match  BYOOS modify
+    function loginMatch($username, $password){
+
+		$this->db->select('password');
+		$this->db->from('users');
+		$this->db->where('username', $username);
+		$hash = $this->db->get()->row('password');
+		if ( password_verify($password, $hash) ){
+			$this->db->select('*');
+			$this->db->from('users');
+			$this->db->where('username', $username);
+			$this->db->where('password', $hash);
+			$query = $this->db->get();
+			return $query->row_array();
+		}
+		return 0;
+	}
+
+IN   /root/application/controllers/General_members.php
+class General_members extends NodCMS_Controller{
+            // BYOOS modify
+			$this->load->model('Registration_model');
+            if($this->Registration_model->PasswordMatch( $this->userdata["username"], $post_data['password']) != $this->userdata["password"]){
+                $this->systemError("Your current password is wrong.", $self_url);
+
+
+IN   /root/application/controllers/General_members.php
+    function accountSetting($lang)
+			.....
+            if($post_data['password']!='') {
+				$data['password'] = $post_data['password'];
+			}
+
+French language is not supported
+IN   /root/application/language/french/...
+
+FIX
+Translate english to french language with   DEEPL
+
+
+********** END debug *************
