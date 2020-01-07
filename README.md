@@ -1,4 +1,4 @@
-Autheur   Gabriel BOBARD  gbobard@gmail.com    http://byoos.com  for the community nodcms    version du 2019/01/6
+Author   Gabriel BOBARD  gbobard@gmail.com   |   http://www.byoos.com    |   for the community nodcms   |    version du 2020/01/06
 The main objective of this work:
 migration NodCMS_v2-0 to ByoosCms_v2-1c on php 7.4 to codeIgniter 3.1.11 password strategy BCRYPT - tanslate French Language
 
