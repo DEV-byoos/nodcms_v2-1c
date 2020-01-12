@@ -12,7 +12,7 @@
                         <?php if(isset($languages) && count($languages)>1){ ?>
                             <li class="nav-item dropdown dropdown-language">
                                 <a href="javascript:;" class="nav-link" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                    <img alt="" src="<?php echo base_url()."/upload_file/images/translate.png"; ?>"/>
+                                    <img alt="" src="<?php echo base_url().$this->language['image']; ?>"/>
                                     <?php echo $this->language['language_title']; ?>
                                 </a>
                                 <div class="dropdown-menu">

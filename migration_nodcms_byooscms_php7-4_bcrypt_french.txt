@@ -117,4 +117,8 @@ FIX
 Translate english to french language with   DEEPL
 
 
+IN  /root/application/views/nodcms-top-menu.php     show flag  on frontend
+replace    <img alt="" src="<?php echo base_url()."/upload_file/images/translate.png"; ?>"/>
+BY         <img alt="" src="<?php echo base_url().$this->language['image']; ?>"/>
+
 ********** END debug *************
